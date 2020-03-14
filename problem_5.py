@@ -4,33 +4,104 @@ import datetime
 
 class Block:
 
-    def __init__(self, data, previous_hash):
-      self.timestamp = datetime.datetime.now() # /TODO: Make timestamp only use GMT time 
-      self.data = data
-      self.previous_hash = previous_hash
-      self.hash = self.calc_hash()
+  def __init__(self, data : str, previous_hash : str):
+    self._timestamp = datetime.datetime.now() # /TODO: Make timestamp only use GMT time 
+    self._data = data # /TODO: Currently data has to be a string. Generalize
+    self._previous_hash = previous_hash
+    self._hash = self.calc_hash()
+
+    self._next = None
+
+  def calc_hash(self):
+      """ Converts timestamp, data and previous_hash into a SHA256 hash
+      
+      Returns:
+          string -- Hexadecimal SHA256 hash in string format
+      """
+      sha = hashlib.sha256()
+
+      date_string = self.timestamp.strftime("%H:%M:%S %d/%m/%Y") # Convert date to string format
+      
+      hash_str = (date_string + " - "+ self.data  + " - " + self.previous_hash) # Assemble block info for hashing
+      hash_str_utf8 = hash_str.encode('utf-8')
+      
+      sha.update(hash_str_utf8)
+
+      return sha.hexdigest()
+
+  @property
+  def timestamp(self) -> datetime.datetime:
+    return self._timestamp
+
+  @property
+  def data(self) -> str:
+    return self._data
+
+  @property
+  def next(self) -> 'Block':
+    return self._next
   
-    def calc_hash(self):
-        """ Converts timestamp, data and previous_hash into a SHA256 hash
-        
-        Returns:
-            string -- Hexadecimal SHA256 hash in string format
-        """
-        sha = hashlib.sha256()
+  @next.setter
+  def next(self, next_block : 'Block'):
+    self._next = next_block
 
-        date_string = self.timestamp.strftime("%H:%M:%S %d/%m/%Y") # Convert date to string format
-        
-        hash_str = (date_string + " - "+ self.data  + " - " + self.previous_hash) # Assemble block info for hashing
-        hash_str_utf8 = hash_str.encode('utf-8')
-        
-        sha.update(hash_str_utf8)
+  @property
+  def hash(self) -> str:
+    return self._hash
 
-        return sha.hexdigest()
+  @property
+  def previous_hash(self) -> str:
+    return self._previous_hash
+
+class Blockchain:
+
+  def __init__(self):
+    self.head = None
+
+  def append(self, data : str):
+    """ Crates block containing the specified data and appends it to the end of the blockchain
+    
+    Arguments:
+        data {str} -- Data to be stored in the blockchain
+    
+    Raises:
+        ValueError: Error raised in an invalid block is found in the blockchain
+    """
+    # Creates a head if there is none
+    if self.head is None:
+        self.head = Block(data, "0")
+        return
+
+    block = self.head
+    
+    # Finds the last block in the chain
+    while block.next is not None:
+      previous_hash = block.hash # Stores block's hash before retrieving new block
+      block = block.next
+
+      # Validates current block
+      if not self.validate_block(block, previous_hash):
+        raise ValueError('Found invalid block"')
+      
+    # Adds new block to the end of the chain  
+    block.next = Block(data, block.hash)
+
+  def validate_block(self, block : Block, hash : str) -> bool:
+    """ Returns whether provided block has the correct hash of the previous block
+    
+    Arguments:
+        block {Block} -- Block to be validated
+        prevoius_hash {str} -- Hash of the previous block
+    
+    Returns:
+        bool -- True if block is valid. Otherwise, false.
+    """
+    return block.previous_hash == hash
+
 
 def test_block():
   # Test first block
   block1 = Block("data1", "0")
-
   assert(block1.data == "data1")
   assert(type(block1.timestamp) == datetime.datetime)
   assert(block1.previous_hash == "0")
@@ -43,9 +114,29 @@ def test_block():
 
   print("Blocks are fine!")
 
+def test_blockchain(data_list : list):
+  blockchain = Blockchain()
 
-def main():
-  test_block()
+  for data in data_list:
+    blockchain.append(data)
+
+  block = blockchain.head
+  index = 0
+  while block is not None:
+    assert(block.data == data_list[index])
+    block = block.next
+    index += 1
+  
 
 if __name__ == "__main__":
-  main()
+  test_block()
+  print("Testing single block in chain")
+  test_blockchain(["data"])
+  print("Testing big block in chain")
+  test_blockchain(["biglargehugeamountofdatainasingleblock123456789qwertyuiopasdfghjklzxcvbnm"])
+  print("Testing 3 blocks in chain")
+  test_blockchain(["data1", "data2", "data3"])
+  print("Testing 10 blocks in chain")
+  test_blockchain(["data1", "data2", "data3", "data4", "data5", "data6", "data7", "data8", "data9", "data10"])
+  print("Blockchain is fine")
+
