@@ -42,7 +42,8 @@ class LinkedList:
         return size
 
 def list_to_set(llist : LinkedList) -> set:
-    """ Converts a LinkedList into a set
+    """ Converts a LinkedList into a set.
+        Traverses the entire list. Time complexity of O(n)
     
     Arguments:
         llist {LinkedList} -- LinkedList
@@ -58,7 +59,8 @@ def list_to_set(llist : LinkedList) -> set:
     return lset
 
 def set_to_list(lset : set) -> LinkedList:
-    """ Converts a set into a LinkedList
+    """ Converts a set into a LinkedList.
+        Accesses all elements in set. Time complexity of O(n)
     
     Arguments:
         lset {set} -- Set to be converted
@@ -76,7 +78,9 @@ def set_to_list(lset : set) -> LinkedList:
 
 def union(llist_1 : LinkedList, llist_2 : LinkedList) -> LinkedList:
     """ Uses sets to generate a LinkedList containing the union of llist_1 and llist_2
-    
+        Time complexity is defined by union(), which depends on the size of both sets. 
+        O(n), where n is len(llist_1) + len(llist_2)
+
     Arguments:
         llist_1 {LinkedList} -- LinkedList object
         llist_2 {LinkedList} -- LinkedList object
@@ -93,7 +97,8 @@ def union(llist_1 : LinkedList, llist_2 : LinkedList) -> LinkedList:
 
 def intersection(llist_1 : LinkedList, llist_2 : LinkedList) -> LinkedList:
     """ Uses sets to generate a LinkedList containing the intersection of llist_1 and llist_2
-    
+        list_to_set(), set_to_list() and intersection() have time complexity of O(n)
+
     Arguments:
         llist_1 {LinkedList} -- LinkedList object
         llist_2 {LinkedList} -- LinkedList object
