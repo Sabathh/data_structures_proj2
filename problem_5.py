@@ -31,7 +31,7 @@ class Block:
       return sha.hexdigest()
 
   @property
-  def timestamp(self) -> datetime.datetime:
+  def timestamp(self) -> datetime:
     return self._timestamp
 
   @property
@@ -105,13 +105,13 @@ def test_block():
   # Test first block
   block1 = Block("data1", "0")
   assert(block1.data == "data1")
-  assert(type(block1.timestamp) == datetime.datetime)
+  assert(type(block1.timestamp) == datetime)
   assert(block1.previous_hash == "0")
 
   # Test next block in chain
   block2 = Block("data2", block1.hash)
   assert(block2.data == "data2")
-  assert(type(block2.timestamp) == datetime.datetime)
+  assert(type(block2.timestamp) == datetime)
   assert(block2.previous_hash == block1.hash)
 
   print("Blocks are fine!")
