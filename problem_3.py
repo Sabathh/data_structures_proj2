@@ -48,7 +48,15 @@ class Tree():
     def root(self, node : Node):
         self._root = node
 
-def huffman_encoding(data : str):
+def huffman_encoding(data : str) -> (str, Tree):
+    """ Encodes data using a Huffman Tree. 
+    
+    Arguments:
+        data {str} -- Data to be encoded
+    
+    Returns:
+        [str, Tree] -- Encoded data in a binary string, Huffman Tree used in the encoding
+    """
     # If no data is provided return empty tree
     if len(data) == 0:
         return "", Tree()
@@ -101,7 +109,20 @@ def huffman_encoding(data : str):
     # Traverse tree to generate dictionary
     huffman_dict = {}
     
-    def traverse(node, string, huffman_dict):
+    def traverse(node : Node, string : str, huffman_dict : dict):
+        """ Traverses tree from starting node and assembles a string 
+            that defines a path on the tree leading to a specific leaf. 
+            0 = go down the left node
+            1 = go down the right node
+
+            The final string for each leaf is added to a dictionary 
+        
+        Arguments:
+            node {node} -- First node of a tree
+            string {str} -- Contains the path to reach a specific leaf of the tree
+            huffman_dict {dict} -- Dictionary that will store the paths to all the leaves in the tree
+        """
+        # Base case: Leaf has been found. Add string to dictionary
         if not node.has_left_child() and not node.has_right_child():
             node.value = node.value[0]
             if string == "":
@@ -110,13 +131,13 @@ def huffman_encoding(data : str):
             return
 
         if node is not None:
+            # Not a leaf. Continue traversing the tree
             traverse(node.left, string + "0", huffman_dict)
             traverse(node.right, string + "1", huffman_dict)
 
     traverse(huffman_tree.root, "", huffman_dict)
 
-    # Encode input
-
+    # Encode input using the assembled huffman_dict
     encoded_str = ""
     for char in data:
         encoded_str += huffman_dict[char]
@@ -124,19 +145,29 @@ def huffman_encoding(data : str):
     return encoded_str, huffman_tree
 
 
-def huffman_decoding(data,tree):
+def huffman_decoding(data : str, tree : Tree) -> str:
+    """ Decodes data in binary string format using a Huffman Tree
+    
+    Arguments:
+        data {str} -- String containing data in binary format. Is used to locate elements in the tree
+        tree {Tree} -- Huffman Tree used to decode data
+    
+    Returns:
+        str -- Decoded data in string format
+    """
     # Decode
-
     curr_node = tree.root
     
     decoded_str = ""
+    # Uses data to traverse tree. 
+    # 0 = go down left. 1 = go down right
     for item in data:
         if item == "0":
             curr_node = curr_node.left
         elif item == "1":
             curr_node = curr_node.right
 
-        # If node is a leaf, retrieve char
+        # If node is a leaf, retrieve char and return to root of tree
         if not curr_node.has_left_child() and not curr_node.has_right_child():
             decoded_str += curr_node.value
             curr_node = tree.root
