@@ -24,6 +24,11 @@ class Node:
         self._key = key
 
 class DoublyLinkedList:
+    """ Doubly Linked List to be used to track the usage of
+        items in the LRU Cache. 
+        A Doubly Linked List Data Structure was prefered due to the following:
+            -   O(1) to remove a known node. All it takes is connecting previous node to next node. 
+    """
     def __init__(self):
         self.head = None
         self.tail = None
@@ -65,7 +70,10 @@ class DoublyLinkedList:
 
 
 class LRU_Cache(object):
-
+    """ LRU_Cache uses a dictionary to store data and Doubly Linked List for usage tracking.
+        Dictionary is O(1) for both storage and retriaval of data
+        Doubly Linked List is O(1) for both removing and prepending nodes.
+    """
     def __init__(self, capacity : int):
         # Initialize class variables
         self._cache_dict = {}
