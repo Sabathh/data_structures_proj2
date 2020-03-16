@@ -41,14 +41,42 @@ class LinkedList:
 
         return size
 
+def list_to_set(llist : LinkedList) -> set:
+
+    current_node = llist.head
+    lset = set()
+    while current_node is not None:
+        lset.add(current_node.value)
+        current_node = current_node.next
+    
+    return lset
+
+def set_to_list(lset : set) -> LinkedList:
+    llist = LinkedList()
+
+    for elem in lset:
+        llist.append(elem)
+    
+    return llist
+
+
 def union(llist_1, llist_2):
-    # Your Solution Here
-    pass
+    lset_1 = list_to_set(llist_1)
+    lset_2 = list_to_set(llist_2)
+    
+    union_set = lset_1.union(lset_2)
+
+    return set_to_list(union_set)
 
 def intersection(llist_1, llist_2):
-    # Your Solution Here
-    pass
+    lset_1 = list_to_set(llist_1)
+    lset_2 = list_to_set(llist_2)
+    
+    intersec_set = lset_1.intersection(lset_2)
 
+    return set_to_list(intersec_set)
+
+# /TODO: Add test cases
 
 # Test case 1
 
