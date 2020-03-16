@@ -22,6 +22,8 @@ class Group(object):
 
 def is_user_in_group(user : str, group : Group) -> bool:
     """Return True if user is in the group, False otherwise.
+
+    Each group/user is visited only once. Time complexity is O(n)
     
     Arguments:
         user {str} -- user name/id
