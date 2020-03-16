@@ -24,7 +24,8 @@ def find_files(suffix, path):
     return list_of_files
 
 def recursive_find_files(suffix : str, path : str, list_of_files : List[str]):
-  """ Recursively find files containing suffix and append to list_of_files
+  """ Recursively find files containing suffix and append to list_of_files. 
+      All folders/files are verified only once. O(n)
   
   Arguments:
       suffix {str} -- File extension 
