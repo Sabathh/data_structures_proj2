@@ -29,8 +29,11 @@ class DoublyLinkedList:
         self.tail = None
 
     def prepend(self, node : Node):
-        """ Prepend a node to the beginning of the list. """
-
+        """ Prepend a node to the beginning of the list. 
+        
+        Arguments:
+            node {Node} -- Node to be added to the head of the list
+        """
         if self.head is None:
             self.head = node
             self.tail = self.head
@@ -60,14 +63,6 @@ class DoublyLinkedList:
             previous_node.next = next_node
             next_node.prev = previous_node
 
-    def pop(self) -> Node:
-        popped_node = self.tail
-
-        previous_node = self.tail.prev
-        self.tail = previous_node
-
-        return popped_node
-
 
 class LRU_Cache(object):
 
@@ -80,14 +75,22 @@ class LRU_Cache(object):
         else:
             self._capacity = capacity
 
-        self._lru_list = DoublyLinkedList()
+        self._lru_list = DoublyLinkedList() # DoublyLinkedList to track recent usage of items in cache 
 
-    def get(self, key) -> Node:
-        # Retrieve item from provided key. Return -1 if nonexistent. 
+    def get(self, key):
+        """ Retrieve item from provided key. 
+            Updates DoublyLinkedList that keeps track of cache usage
+        
+        Arguments:
+            key {[type]} -- Key used to find item stored in cache
+        
+        Returns:
+            Node.value -- Value stored in cache. Return -1 if nonexistent.
+        """
         if key in self._cache_dict.keys():
             retrieved_node = self._cache_dict[key]
 
-            # Move node to head of list
+            # Move used node to head of DoublyLinkedList
             self._lru_list.remove(retrieved_node)
             self._lru_list.prepend(retrieved_node)
 
@@ -96,23 +99,30 @@ class LRU_Cache(object):
             return -1
 
     def set(self, key, value):
+        """ Set the value if the key is not present in the cache. 
+            If the cache is at capacity remove the oldest item.
+            The oldest item is either the last one inserted or the last one accessed.
+        
+        Arguments:
+            key {[type]} -- Key used to store value stored in cache
+            value {[type]} -- Value to be stored in cache
+        """
         # Set the value if the key is not present in the cache. If the cache is at capacity remove the oldest item. 
         if len(self._cache_dict) < self._capacity:
             self._cache_dict[key] = Node(key, value)
             self._lru_list.prepend(self._cache_dict[key])
         else:
-            oldest_node = self._lru_list.tail
+            oldest_node = self._lru_list.tail # Least used item is always at the end of the DoublyLinkedList
 
+            # Removes node from both dictionary and DoublyLinkedList
             old_key = oldest_node.key
             del self._cache_dict[old_key]
-
             self._lru_list.remove(oldest_node)
 
+            # Adds new value to dictionary and to the head of DoublyLinkedList
             self._cache_dict[key] = Node(key, value)
             self._lru_list.prepend(self._cache_dict[key])
         
-
-
 
 def test_complete_lrc_cache():
 
