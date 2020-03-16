@@ -1,18 +1,18 @@
 import hashlib
 
-import datetime
+from datetime import datetime, timezone
 
 class Block:
 
   def __init__(self, data : str, previous_hash : str):
-    self._timestamp = datetime.datetime.now() # /TODO: Make timestamp only use GMT time 
-    self._data = data # /TODO: Currently data has to be a string. Generalize
+    self._timestamp = datetime.now(timezone.utc) # UTC is the same as GMT
+    self._data = data # Implementation on accepts data as string
     self._previous_hash = previous_hash
     self._hash = self.calc_hash()
 
     self._next = None
 
-  def calc_hash(self):
+  def calc_hash(self) -> str:
       """ Converts timestamp, data and previous_hash into a SHA256 hash
       
       Returns:
@@ -81,7 +81,7 @@ class Blockchain:
 
       # Validates current block
       if not self.validate_block(block, previous_hash):
-        raise ValueError('Found invalid block"')
+        raise ValueError('Found invalid block"') # Not sure which error is more appropriate
       
     # Adds new block to the end of the chain  
     block.next = Block(data, block.hash)
@@ -115,6 +115,7 @@ def test_block():
   print("Blocks are fine!")
 
 def test_blockchain(data_list : list):
+  # Create entire blockchain and checks if all values in data_list were included as blocks
   blockchain = Blockchain()
 
   for data in data_list:
