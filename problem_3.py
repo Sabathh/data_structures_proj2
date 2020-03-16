@@ -50,7 +50,8 @@ class Tree():
 
 def huffman_encoding(data : str) -> (str, Tree):
     """ Encodes data using a Huffman Tree. 
-    
+        Code complexity is O(n*log(n)) due to assembling the tree 
+        and usage of the sorted() and traverse() functions
     Arguments:
         data {str} -- Data to be encoded
     
@@ -71,13 +72,13 @@ def huffman_encoding(data : str) -> (str, Tree):
     
     # Convert dict into list of tuples
     freq_list = [Node((k, v)) for k, v in freq_dict.items()]
-    freq_list = sorted(freq_list, key = lambda x: -x.value[1])
-    guide_list = [(k, v) for k, v in freq_dict.items()]
-    guide_list = sorted(guide_list, key = lambda x: -x[1])
+    freq_list = sorted(freq_list, key = lambda x: -x.value[1]) # sorted is O(n*log(n))
 
     # Assemble Huffman Tree
     huffman_tree = Tree()
 
+    # Each letter takes O(log(n)) to be inserted into the tree. 
+    # Assembling the entire tree then takes O(n*log(n))
     while len(freq_list) > 1:
         left_node = freq_list.pop()
         right_node = freq_list.pop()
@@ -116,6 +117,9 @@ def huffman_encoding(data : str) -> (str, Tree):
             1 = go down the right node
 
             The final string for each leaf is added to a dictionary 
+
+            Since it takes O(log(n)) to reach an individual leaf the
+            total time complexity is O(n*log(n)).
         
         Arguments:
             node {node} -- First node of a tree
@@ -146,7 +150,9 @@ def huffman_encoding(data : str) -> (str, Tree):
 
 
 def huffman_decoding(data : str, tree : Tree) -> str:
-    """ Decodes data in binary string format using a Huffman Tree
+    """ Decodes data in binary string format using a Huffman Tree.
+        Since the data containg the path used to traverse the tree
+        no tree search is required to decode. Complexity of O(n).
     
     Arguments:
         data {str} -- String containing data in binary format. Is used to locate elements in the tree
