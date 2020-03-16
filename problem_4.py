@@ -19,18 +19,11 @@ class Group(object):
     def get_name(self):
         return self.name
 
+ # /TODO: Add more testcases
 
-parent = Group("parent")
-child = Group("child")
-sub_child = Group("subchild")
 
-sub_child_user = "sub_child_user"
-sub_child.add_user(sub_child_user)
 
-child.add_group(sub_child)
-parent.add_group(child)
-
-def is_user_in_group(user, group):
+def is_user_in_group(user, group) -> bool:
     """
     Return True if user is in the group, False otherwise.
 
@@ -38,4 +31,28 @@ def is_user_in_group(user, group):
       user(str): user name/id
       group(class:Group): group to check user membership against
     """
-    return None
+    if user in group.users:
+        return True
+    elif len(group.groups) > 0:
+        for elem in group.groups:
+            if is_user_in_group(user, elem):
+                return True
+    return False
+
+if __name__ == "__main__":
+    
+    parent = Group("parent")
+    child = Group("child")
+    sub_child = Group("subchild")
+
+    sub_child_user = "sub_child_user"
+    sub_child.add_user(sub_child_user)
+
+    child.add_group(sub_child)
+    parent.add_group(child)
+
+    is_user_in_group(sub_child_user, sub_child)
+
+    is_user_in_group(sub_child_user, child)
+
+    is_user_in_group(sub_child_user, parent)
