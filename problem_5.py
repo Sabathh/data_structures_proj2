@@ -13,7 +13,8 @@ class Block:
     self._next = None
 
   def calc_hash(self) -> str:
-      """ Converts timestamp, data and previous_hash into a SHA256 hash
+      """ Converts timestamp, data and previous_hash into a SHA256 hash.
+          Hashing to sha256 has the complexity of O(n), since each character is visited once.
       
       Returns:
           string -- Hexadecimal SHA256 hash in string format
@@ -60,6 +61,7 @@ class Blockchain:
 
   def append(self, data : str):
     """ Crates block containing the specified data and appends it to the end of the blockchain
+        Requires traversing the list. O(n)
     
     Arguments:
         data {str} -- Data to be stored in the blockchain
@@ -88,7 +90,7 @@ class Blockchain:
 
   def validate_block(self, block : Block, hash : str) -> bool:
     """ Returns whether provided block has the correct hash of the previous block
-    
+        Simply compares the values. Complexity of O(1)
     Arguments:
         block {Block} -- Block to be validated
         prevoius_hash {str} -- Hash of the previous block
