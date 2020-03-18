@@ -28,6 +28,7 @@ class DoublyLinkedList:
         items in the LRU Cache. 
         A Doubly Linked List Data Structure was prefered due to the following:
             -   O(1) to remove a known node. All it takes is connecting previous node to next node. 
+            -   Space complexity of a DoublyLinkedList grow linearly with the input size: O(n)
     """
     def __init__(self):
         self.head = None
@@ -35,7 +36,7 @@ class DoublyLinkedList:
 
     def prepend(self, node : Node):
         """ Prepend a node to the beginning of the list. 
-        
+            
         Arguments:
             node {Node} -- Node to be added to the head of the list
         """
@@ -71,17 +72,13 @@ class DoublyLinkedList:
 
 class LRU_Cache(object):
     """ LRU_Cache uses a dictionary to store data and Doubly Linked List for usage tracking.
-        Dictionary is O(1) for both storage and retriaval of data
+        Dictionary is O(1) for both storage and retriaval of data, and has a space complexity of O(n).
         Doubly Linked List is O(1) for both removing and prepending nodes.
     """
     def __init__(self, capacity : int):
         # Initialize class variables
         self._cache_dict = {}
-        if capacity < 1:
-            warnings.warn("Specified capacity lower than 1. Setting cache capacity to 1.", Warning)
-            self._capacity = 1
-        else:
-            self._capacity = capacity
+        self._capacity = capacity
 
         self._lru_list = DoublyLinkedList() # DoublyLinkedList to track recent usage of items in cache 
 
@@ -115,21 +112,23 @@ class LRU_Cache(object):
             key {[type]} -- Key used to store value stored in cache
             value {[type]} -- Value to be stored in cache
         """
-        # Set the value if the key is not present in the cache. If the cache is at capacity remove the oldest item. 
-        if len(self._cache_dict) < self._capacity:
-            self._cache_dict[key] = Node(key, value)
-            self._lru_list.prepend(self._cache_dict[key])
-        else:
-            oldest_node = self._lru_list.tail # Least used item is always at the end of the DoublyLinkedList
+        # Check if capacity is above zero
+        if self._capacity > 0:
+            # Set the value if the key is not present in the cache. If the cache is at capacity remove the oldest item. 
+            if len(self._cache_dict) < self._capacity:
+                self._cache_dict[key] = Node(key, value)
+                self._lru_list.prepend(self._cache_dict[key])
+            else:
+                oldest_node = self._lru_list.tail # Least used item is always at the end of the DoublyLinkedList
 
-            # Removes node from both dictionary and DoublyLinkedList
-            old_key = oldest_node.key
-            del self._cache_dict[old_key]
-            self._lru_list.remove(oldest_node)
+                # Removes node from both dictionary and DoublyLinkedList
+                old_key = oldest_node.key
+                del self._cache_dict[old_key]
+                self._lru_list.remove(oldest_node)
 
-            # Adds new value to dictionary and to the head of DoublyLinkedList
-            self._cache_dict[key] = Node(key, value)
-            self._lru_list.prepend(self._cache_dict[key])
+                # Adds new value to dictionary and to the head of DoublyLinkedList
+                self._cache_dict[key] = Node(key, value)
+                self._lru_list.prepend(self._cache_dict[key])
         
 
 def test_complete_lrc_cache():
@@ -150,21 +149,24 @@ def test_complete_lrc_cache():
     
     assert(our_cache.get(3) == -1)      # returns -1 because the cache reached it's capacity and 3 was the least recently used entry
 
-def test_edge_cases():
-    null_cache = LRU_Cache(0) # If the capacity provided is lower than 1 then the capacity will be set to 1.
-
-    # Add single value
-    null_cache.set(1, 1)
-    assert(null_cache.get(1) == 1)
-
     # Replace value using same key
-    null_cache.set(1, 2)
-    assert(null_cache.get(1) == 2)
+    our_cache.set(6, 42)
+    assert(our_cache.get(6) == 42)
 
-    # Replace key and value
+def test_edge_cases():
+    """ Simulates a memory bound problem in which cache is 
+        created with leftover memory. In this case there is none leftover.
+    """
+    null_cache = LRU_Cache(0) 
+
+    # Try to add a single value
+    null_cache.set(1, 1)
+    assert(null_cache.get(1) == -1)
+
+    # Try to add another value
     null_cache.set(2, 2)
     assert(null_cache.get(1) == -1)
-    assert(null_cache.get(2) == 2)
+    assert(null_cache.get(2) == -1)
 
 def test_lrc_cache_operations():
     # Create cache with 10 positions
