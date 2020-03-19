@@ -58,28 +58,14 @@ def list_to_set(llist : LinkedList) -> set:
     
     return lset
 
-def set_to_list(lset : set) -> LinkedList:
-    """ Converts a set into a LinkedList.
-        Accesses all elements in set. Time complexity of O(n)
-    
-    Arguments:
-        lset {set} -- Set to be converted
-    
-    Returns:
-        LinkedList -- LinkedList containing all elements of set
-    """
-    llist = LinkedList()
-
-    for elem in lset:
-        llist.append(elem)
-    
-    return llist
-
 
 def union(llist_1 : LinkedList, llist_2 : LinkedList) -> LinkedList:
     """ Uses sets to generate a LinkedList containing the union of llist_1 and llist_2
-        Time complexity is defined by union(), which depends on the size of both sets. 
+
+        Time complexity is defined by the for loops, which depends on the size of both sets. 
         O(n), where n is len(llist_1) + len(llist_2)
+
+        Space complexity scales linearly with the size of the lists: O(n)
 
     Arguments:
         llist_1 {LinkedList} -- LinkedList object
@@ -88,16 +74,30 @@ def union(llist_1 : LinkedList, llist_2 : LinkedList) -> LinkedList:
     Returns:
         LinkedList -- LinkedList containing the union of inputs
     """
+    # Convert to set to remove repeated entries in each list
     lset_1 = list_to_set(llist_1)
     lset_2 = list_to_set(llist_2)
     
-    union_set = lset_1.union(lset_2)
+    # Combine the two sets to create a union
+    union_list = LinkedList()
+    list_of_added = []
+    for item in lset_1:
+        union_list.append(item)
+        list_of_added.append(item)
 
-    return set_to_list(union_set)
+    for item in lset_2:
+        if item not in list_of_added:
+            union_list.append(item)
+
+    return union_list
 
 def intersection(llist_1 : LinkedList, llist_2 : LinkedList) -> LinkedList:
     """ Uses sets to generate a LinkedList containing the intersection of llist_1 and llist_2
-        list_to_set(), set_to_list() and intersection() have time complexity of O(n)
+
+        Time complexity is defined by the for loops, which depends on the size of both sets. 
+        O(n), where n is len(llist_1) + len(llist_2)
+
+        Space complexity scales linearly with the size of the lists: O(n)
 
     Arguments:
         llist_1 {LinkedList} -- LinkedList object
@@ -106,12 +106,24 @@ def intersection(llist_1 : LinkedList, llist_2 : LinkedList) -> LinkedList:
     Returns:
         LinkedList -- LinkedList containing the intersection of inputs
     """
+    # Convert to set to remove repeated entries in each list
     lset_1 = list_to_set(llist_1)
     lset_2 = list_to_set(llist_2)
-    
-    intersec_set = lset_1.intersection(lset_2)
 
-    return set_to_list(intersec_set)
+    # Initialize empty intersec_list
+    intersec_list = LinkedList()
+    
+    # Populate list_of_candidates with all elements from lset_1
+    list_of_candidates = []
+    for item in lset_1:
+        list_of_candidates.append(item)
+
+    # Only add to intersec_list the items from lset_2 available in list_of_candidates
+    for item in lset_2:
+        if item in list_of_candidates:
+            intersec_list.append(item)
+
+    return intersec_list
 
 def test_edge_cases():
     pass
