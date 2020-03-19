@@ -1,3 +1,5 @@
+import warnings
+
 class Group(object):
     def __init__(self, _name):
         self.name = _name
@@ -25,6 +27,9 @@ def is_user_in_group(user : str, group : Group) -> bool:
 
     Each group/user is visited only once. Time complexity is O(n)
     
+    Both the number of variables created and the call stack size 
+    scales linearly with the number of groups/users. Space complexity O(n)
+    
     Arguments:
         user {str} -- user name/id
         group {Group} -- group to check user membership against
@@ -32,6 +37,11 @@ def is_user_in_group(user : str, group : Group) -> bool:
     Returns:
         bool -- True if user is in the group, False otherwise.
     """
+    # Sanity check: Is the provided group of the type Group?
+    if not isinstance(group, Group):
+        warnings.warn("Argument group is not an instance of the Group class", Warning)
+        return False
+
     if user in group.get_users():
         # User is in group
         return True
@@ -54,6 +64,9 @@ def test_edge_cases():
     assert(is_user_in_group("sibling", single_group) == False)
     assert(is_user_in_group(None, single_group) == False)
 
+    # group passed is not an actual group
+    assert(is_user_in_group("orphan", "i am no group") == False)
+
 
 def test_standard_group():
 
@@ -72,8 +85,6 @@ def test_standard_group():
     assert(is_user_in_group(sub_child_user, child) == True)
 
     assert(is_user_in_group(sub_child_user, parent) == True)
-
-    assert(is_user_in_group("orphan", parent) == False)
 
 def test_big_group():
 
