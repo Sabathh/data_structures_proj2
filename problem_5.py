@@ -125,21 +125,29 @@ def test_blockchain(data_list : list):
 
   block = blockchain.head
   index = 0
+  print("\nBlockchain containing:", data_list)
   while block is not None:
     assert(block.data == data_list[index])
+    print("\nTimestamp : ", block.timestamp.strftime("%H:%M:%S %d/%m/%Y"))
+    print("Data : ", block.data)
+    print("Hash : ", block.hash)
+    print("Previous Hash : ", block.previous_hash)
+
     block = block.next
     index += 1
   
 
 if __name__ == "__main__":
   test_block()
-  print("Testing single block in chain")
+  print("\nTesting single block in chain")
   test_blockchain(["data"])
-  print("Testing big block in chain")
+  print("\nTesting same data in every block")
+  test_blockchain(["data", "data", "data", "data", "data", "data"])
+  print("\nTesting big block in chain")
   test_blockchain(["biglargehugeamountofdatainasingleblock123456789qwertyuiopasdfghjklzxcvbnm"])
-  print("Testing 3 blocks in chain")
+  print("\nTesting 3 blocks in chain")
   test_blockchain(["data1", "data2", "data3"])
-  print("Testing 10 blocks in chain")
+  print("\nTesting 10 blocks in chain")
   test_blockchain(["data1", "data2", "data3", "data4", "data5", "data6", "data7", "data8", "data9", "data10"])
-  print("Blockchain is fine")
+  print("\nBlockchain is fine")
 
