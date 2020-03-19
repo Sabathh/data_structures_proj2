@@ -24,6 +24,7 @@ def find_files(suffix, path):
     return list_of_files
 
 def recursive_find_files(suffix : str, path : str, list_of_files : List[str]):
+  # /TODO: Improve time complexity explanation. Add space complexity
   """ Recursively find files containing suffix and append to list_of_files. 
       All folders/files are verified only once. O(n)
   
@@ -32,6 +33,10 @@ def recursive_find_files(suffix : str, path : str, list_of_files : List[str]):
       path {str} -- Path of directory/file to be searched
       list_of_files {List[str]} -- List of strings that shall contain the result
   """
+  # Sanity check: verify if path exists
+  if not os.path.exists(path):
+    raise ValueError('Provided path does not exist!')
+
   # Base case: If a path to a file is provided, return
   if os.path.isfile(path):
     if path.endswith(suffix):
@@ -46,6 +51,8 @@ def recursive_find_files(suffix : str, path : str, list_of_files : List[str]):
 def test_find_files():
   # Single folder containing one file to be found
   assert(find_files(".c", ".\\problem_2_dir\\subdir1") == ['.\\problem_2_dir\\subdir1\\a.c'])
+  # Full path to a file
+  assert(find_files(".c", ".\\problem_2_dir\\subdir1\\a.c") == ['.\\problem_2_dir\\subdir1\\a.c'])
   # Single folder containing no file to be found
   assert(find_files(".c", ".\\problem_2_dir\\subdir2") == [])
   # Deep path containing multiple files to be found
@@ -60,6 +67,13 @@ def test_find_files():
                                                   '.\\problem_2_dir\\subdir3\\subsubdir1\\b.c', 
                                                   '.\\problem_2_dir\\subdir5\\a.c',
                                                   '.\\problem_2_dir\\t1.c'])
+  try:
+    # Path doesn't exist
+    find_files(".c", ".\\where\\am\\i")
+  except ValueError:
+    print("Error raised as expected")
+  else:
+    raise ValueError("Error not raised as expected!")
 
 if __name__ == "__main__":
   
