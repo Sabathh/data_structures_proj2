@@ -50,8 +50,17 @@ class Tree():
 
 def huffman_encoding(data : str) -> (str, Tree):
     """ Encodes data using a Huffman Tree. 
-        Code complexity is O(n*log(n)) due to assembling the tree 
+
+        Time complexity is O(n*log(n)) due to assembling the tree 
         and usage of the sorted() and traverse() functions
+
+        Space complexity is defined by the number of nodes in the tree.
+        Given that the Huffman tree assembled is a full binary tree, 
+        nodes = 2 * leaves - 1 
+        Considering the worst case scenario of each char in data being 
+        converted into a leaf, that gives a space complexity of O(n).
+        (Reference: http://courses.cs.vt.edu/~cs3114/Fall09/wmcquain/Notes/T03a.BinaryTreeTheorems.pdf)
+
     Arguments:
         data {str} -- Data to be encoded
     
@@ -151,8 +160,11 @@ def huffman_encoding(data : str) -> (str, Tree):
 
 def huffman_decoding(data : str, tree : Tree) -> str:
     """ Decodes data in binary string format using a Huffman Tree.
+
         Since the data containg the path used to traverse the tree
-        no tree search is required to decode. Complexity of O(n).
+        no tree search is required to decode. Time complexity of O(n).
+
+        Space complexity grows linearly with the size of data. O(n)
     
     Arguments:
         data {str} -- String containing data in binary format. Is used to locate elements in the tree
@@ -205,6 +217,9 @@ if __name__ == "__main__":
 
     # Single value string
     test_huffman("B")
+
+    # Long string with single letter
+    test_huffman("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB")
 
     # A great sentence
     test_huffman("The bird is the word")
