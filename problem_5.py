@@ -15,7 +15,7 @@ class Block:
   def calc_hash(self) -> str:
       """ Converts timestamp, data and previous_hash into a SHA256 hash.
           Hashing to sha256 has the complexity of O(n), since each character is visited once.
-      
+          All the variables are created once for each input in the blockchain. Space complexity of O(n)
       Returns:
           string -- Hexadecimal SHA256 hash in string format
       """
