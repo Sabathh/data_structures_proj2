@@ -24,9 +24,15 @@ def find_files(suffix, path):
     return list_of_files
 
 def recursive_find_files(suffix : str, path : str, list_of_files : List[str]):
-  # /TODO: Improve time complexity explanation. Add space complexity
   """ Recursively find files containing suffix and append to list_of_files. 
-      All folders/files are verified only once. O(n)
+      
+      Considering N as the number of files in each directorr and 
+      D as the depth of the directory:
+        - Time complexity  - O(N+D) : In order to go through all the directories and files in the
+                                      tree the function is called recursively once for each 
+                                      file/directory. 
+        - Space complexity - O(D)   : The space on the call stack scales linearly with the 
+                                      number of directories (one recursion call for each directory).
   
   Arguments:
       suffix {str} -- File extension 
